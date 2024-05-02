@@ -22,7 +22,7 @@ const Register = () => {
         if(!isRegistering) {
             setIsRegistering(true)
             const res = await doCreateUserWithEmailAndPassword(email, password)
-            console.log(res.user.uid)
+            //console.log(res.user.uid)
             await createRootFolder(res.user.uid)
         }
     }

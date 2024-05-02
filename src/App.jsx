@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/header/Header';
 import Dashboard from './components/dashboard/Dashboard';
 import Navbar from './components/navbar/Navbar';
+import CreatedFileComponent from './components/createdFileComponent/CreatedFileComponent';
 
 function App() {
   const { userLoggedIn } = useAuth();
@@ -25,12 +26,16 @@ function App() {
         userLoggedIn && pathname.startsWith("/dashboard") ?
         <div className='flex'>
           <SideBar />
-          <div className='flex-1'>
+          <div className='flex-1 ml-60'>
             <Header />
             
-            <Routes>
-              <Route exact path="/dashboard" element={<Dashboard />} />
-            </Routes>
+            <main className='mt-20'>
+              <Routes>
+                <Route exact path="/dashboard" element={<Dashboard />} />
+                <Route exact path="/dashboard/:folderId" element={<Dashboard />} />
+                <Route exact path="/dashboard/file/:fileId" element={<CreatedFileComponent />} />
+              </Routes>
+            </main>
           </div>
         </div>
         :

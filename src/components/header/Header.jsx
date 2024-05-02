@@ -11,7 +11,7 @@ export default function Header() {
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate()  
   return (
-    <nav className='pt-3 ps-10 pe-14 flex items-center justify-between'>
+    <nav className='pt-3 ps-10 pe-14 bg-white min-h-16 flex items-center justify-between fixed top-0 z-10 md:w-[82.10%]'>
         <div className="w-[500px] border">
             <Input
                 radius="none"

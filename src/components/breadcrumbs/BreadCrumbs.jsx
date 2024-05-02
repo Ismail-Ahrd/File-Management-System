@@ -1,15 +1,19 @@
 import React from "react";
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 import { useFileFolder } from "../../contexts/FileFolderContext";
-import { getFolderById } from "../../firebase/db";
+import { getDocumentById } from "../../firebase/db";
+import { useNavigate } from "react-router-dom";
 
-export default function BreadCrumbs() {
-  const { currentFolder, setCurrentFolder } = useFileFolder()
-  //console.log(currentFolder)
+export default function BreadCrumbs({ fileName }) {
+  const { currentFolder, setCurrentFolder } = useFileFolder();
+  const navigate = useNavigate()
 
   const onClick = async (id) => {
-    const res = await getFolderById(id)
+    console.log(id)
+    const res = await getDocumentById(id)
+    localStorage.setItem("currentFolder", JSON.stringify(res));
     setCurrentFolder(res)
+    navigate(`/dashboard/${id}`)
   }
 
   return (
@@ -21,9 +25,17 @@ export default function BreadCrumbs() {
           </BreadcrumbItem>
         )
       })}
-      <BreadcrumbItem>
+      <BreadcrumbItem onPress={() => onClick(currentFolder.id)}>
         { currentFolder.name }
       </BreadcrumbItem>
+      {
+        fileName != undefined ?
+        <BreadcrumbItem>
+          { fileName }
+        </BreadcrumbItem>
+      :
+      null
+      }
     </Breadcrumbs>
   );
 }

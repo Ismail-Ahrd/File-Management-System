@@ -3,7 +3,7 @@ import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDis
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi"
 import { useFileFolder } from "../../contexts/FileFolderContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { addFolder } from "../../firebase/db";
+import { addDocument } from "../../firebase/db";
 
 
 export default function CreateFolderModal() {
@@ -12,7 +12,7 @@ export default function CreateFolderModal() {
   const [isFocused, setIsFocused] = useState(false);
   const isInvalid = isFocused && folderName.length < 3;
   const { currentUser } = useAuth();
-  const { folders, setFolders, currentFolder, setCurrentFolder } = useFileFolder();
+  const { currentFolder, documents, setDocuments } = useFileFolder();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,10 +31,11 @@ export default function CreateFolderModal() {
         userId: currentUser.uid,
         path: path,
         updatedAt: new Date(),
-        lastAccessed: null 
+        lastAccessed: null ,
+        documentType: "folder"
       }
-      const res = await addFolder(data);
-      setFolders([...folders, res])
+      const res = await addDocument(data);
+      setDocuments([...documents, res])
     }
     setFolderName("")
   }
@@ -43,12 +44,12 @@ export default function CreateFolderModal() {
   return (
     <>
       <Button 
-            className='border border-gray-500 bg-transparent text-gray-900'
-            onPress={onOpen}
-            radius='none' 
-            startContent={<FiFolderPlus className='text-xl text-gray-900'/>}
-        >
-            Create folder
+        className='border border-gray-500 bg-transparent text-gray-900'
+        onPress={onOpen}
+        radius='sm' 
+        startContent={<FiFolderPlus className='text-xl text-gray-900'/>}
+      >
+        Create folder
       </Button>
       <Modal 
         isOpen={isOpen} 

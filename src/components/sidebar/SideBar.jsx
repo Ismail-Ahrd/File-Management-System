@@ -9,7 +9,7 @@ export default function SideBar() {
   
 
   return (
-    <div className='w-60 border-r-gray-400 border-r-1 h-screen flex flex-col gap-3 pt-5'>
+    <div className='fixed w-60 border-r-gray-400 border-r-1 h-screen flex flex-col gap-3 pt-5 bg-white'>
         <Link to="/" className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white'>
             LOGO
         </Link>

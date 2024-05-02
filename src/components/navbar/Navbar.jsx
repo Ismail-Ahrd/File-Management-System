@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext';
 import AvatarDropdown from '../avatar/Avatar';
+import { useFileFolder } from '../../contexts/FileFolderContext';
 
 export default function Navbar() {
   const { pathname } = useLocation();
   const [current, setCurrent] = useState("")
-  const { currentUser, userLoggedIn } = useAuth();
+  const { userLoggedIn } = useAuth();
+  const { currentFolder } = useFileFolder();
   const linkStyle ="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent";
   const currentLinkStyle = "block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500";
+
+  //console.log(currentFolder)
 
   useEffect(() => {
     setCurrent(pathname);
@@ -33,7 +37,7 @@ export default function Navbar() {
                         userLoggedIn ?
                         <>
                             <li>
-                                <Link to="/dashboard" className={current == "/dashboard" ? currentLinkStyle :linkStyle} >
+                                <Link to={`/dashboard/${currentFolder.id}`} className={current == "/dashboard" ? currentLinkStyle :linkStyle} >
                                     Dashboard
                                 </Link>
                             </li>

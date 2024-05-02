@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getFolders, getRootFolder } from "../firebase/db";
+import { getRootFolder } from "../firebase/db";
 import { useAuth } from "./AuthContext";
 
 const FileFolderContext = createContext()
@@ -12,34 +12,14 @@ export function useFileFolder() {
 export function FileFolderProvider({children}) {
   const { currentUser } = useAuth()  
   const [currentFolder, setCurrentFolder] = useState();
-  const [folders, setFolders] = useState([]);
-  const [files, setFiles] = useState([]); 
+/*   const [folders, setFolders] = useState([]);
+  const [files, setFiles] = useState([]);  */
   const [loading, setLoading] = useState(true);
 
-  /* useEffect(() => {
-    getRootfolder()
-    .then(() => getfolders())
-    .catch(error => console.error("Error fetching root folder:", error));
-  }, [])
-
-  async function getfolders() {
-    if (!currentFolder) return;
-    console.log(currentFolder)
-    const res = await getFolders(currentUser.uid, currentFolder.name)
-    const data = res.map(doc => doc.data())
-    //console.log(data)
-    setFolders(data)
-    //setFolders(prevFolders => [...prevFolders, ...res.map(doc => doc.data())]);
-  }
-
-  async function getRootfolder() {
-    const rootFolder = await getRootFolder();
-    setCurrentFolder(rootFolder)
-    setLoading(false)
-  } */
+  const [documents, setDocuments] = useState([])
 
   useEffect(() => {
-    const fetchData = async () => {
+    /* const fetchData = async () => {
       try {
         const rootFolder = await getRootFolder();
         setCurrentFolder(rootFolder);
@@ -50,11 +30,31 @@ export function FileFolderProvider({children}) {
       }
     };
   
-    fetchData();
-  
+    fetchData(); */
+    initialize()
   }, []);
+
+  const initialize = async () => {
+    const folder = localStorage.getItem("currentFolder")
+    if (folder != "undefined" && folder != null) {
+      setCurrentFolder(JSON.parse(folder))
+      setLoading(false)
+    } else {
+      console.log("Hello3")
+      try {
+        const rootFolder = await getRootFolder();
+        localStorage.setItem("currentFolder", JSON.stringify(rootFolder));
+        setCurrentFolder(rootFolder);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching root folder:", error);
+        setLoading(false);
+      }
+    }
+    
+  };
   
-  useEffect(() => {
+  /* useEffect(() => {
     if (currentFolder) {
       const fetchData = async () => {
         try {
@@ -76,16 +76,18 @@ export function FileFolderProvider({children}) {
   
       fetchData();
     }
-  }, [currentFolder]); 
+  }, [currentFolder]);  */
   
 
   const value = {
     currentFolder,
-    folders,
-    files,
-    setFolders,
-    setFiles,
-    setCurrentFolder
+/*     folders,
+    files, */
+    documents,
+/*     setFolders,
+    setFiles, */
+    setCurrentFolder,
+    setDocuments
   }
 
   return (

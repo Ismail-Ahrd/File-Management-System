@@ -7,14 +7,14 @@ import CreateFolderModal from '../modals/createFolderModal';
 export default function FileOperations() {
   return (
     <div className='flex gap-4 justify-end'>
-        <CreateFileModal />
         <Button 
             className='border border-gray-500 bg-transparent text-gray-900'
-            radius='none' 
+            radius='sm' 
             startContent={<MdOutlineUploadFile className='text-xl text-gray-900'/>}
         >
             Upload file
         </Button>
+        <CreateFileModal />
         <CreateFolderModal />
     </div>
   )
