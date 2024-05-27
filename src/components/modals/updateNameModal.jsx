@@ -1,18 +1,21 @@
-import React, { useState } from "react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Input, Link} from "@nextui-org/react";
+
+import React, { useEffect, useState } from "react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Input, Link, DropdownItem} from "@nextui-org/react";
 import { FiFilePlus } from "react-icons/fi"
 import { useAuth } from "../../contexts/AuthContext";
 import { createFile } from "../../firebase/storage";
 import { decrypt } from "../../utils/crypto";
 import { useParams } from "react-router-dom";
+import { MdModeEdit } from "react-icons/md";
 
-export default function CreateFileModal({setChanged}) {
+export default function UpdateNameModal({setChanged}) {
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   const [fileName, setFileName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const isInvalid = isFocused && fileName.split('.')[0].length < 3;
   const { currentUser } = useAuth();
   const {documentId} = useParams()
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,16 +26,20 @@ export default function CreateFileModal({setChanged}) {
     setChanged(true)
   }
 
+  useEffect(() => {
+    onOpen()
+  }, [])
+
   return (
     <>
-      <Button 
-        className='border border-gray-500 bg-transparent text-gray-900'
+      <div
+        startContent={<MdModeEdit size={20} color="blue"/>} 
+        className='text-blue-600 font-bold hidden'
         onPress={onOpen}
-        radius='sm' 
-        startContent={<FiFilePlus className='text-xl text-gray-900'/>}
+        onClick={() => onOpen()}
       >
-        Create file
-      </Button>
+        Rename
+      </div>
       <Modal 
         isOpen={isOpen} 
         onOpenChange={onOpenChange}
@@ -64,7 +71,7 @@ export default function CreateFileModal({setChanged}) {
                     Close
                   </Button>
                   <Button color="primary" type="submit" isDisabled={fileName.split('.')[0].length < 3}>
-                    Create file
+                    Confirm
                   </Button>
                 </ModalFooter>
               </>

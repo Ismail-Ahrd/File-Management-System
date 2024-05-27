@@ -1,41 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
-import { useFileFolder } from "../../contexts/FileFolderContext";
-import { getDocumentById } from "../../firebase/db";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { decrypt, encrypt } from "../../utils/crypto";
 
 export default function BreadCrumbs({ fileName }) {
-  const { currentFolder, setCurrentFolder } = useFileFolder();
+  const {currentUser} = useAuth()
+  const { documentId } = useParams()
+  const [breads, setBreads] = useState([]);
   const navigate = useNavigate()
 
-  const onClick = async (id) => {
-    console.log(id)
-    const res = await getDocumentById(id)
-    localStorage.setItem("currentFolder", JSON.stringify(res));
-    setCurrentFolder(res)
-    navigate(`/dashboard/${id}`)
+  useEffect(() => {
+    let list = decrypt(documentId).split("/")
+    list[0] = "root"
+    setBreads(list)
+  }, [documentId])
+
+  const onClick = async (index) => {
+    console.log(index)
+    const list = breads.slice(0,index+1);
+    list[0] = currentUser.uid;
+    const str = list.join("/")
+    navigate(`/dashboard/${encrypt(str)}`)
   }
 
   return (
     <Breadcrumbs size="lg">
-      {currentFolder.path.map((path) => {
+      {breads.map((bread, index) => {
+        
         return (
-          <BreadcrumbItem onPress={() => onClick(path.id)} key={path.id}>
-            {path.name}
+          <BreadcrumbItem key={bread+index} onClick={() => onClick(index)}>
+            {bread}
           </BreadcrumbItem>
         )
       })}
-      <BreadcrumbItem onPress={() => onClick(currentFolder.id)}>
-        { currentFolder.name }
-      </BreadcrumbItem>
-      {
-        fileName != undefined ?
-        <BreadcrumbItem>
-          { fileName }
-        </BreadcrumbItem>
-      :
-      null
-      }
     </Breadcrumbs>
   );
 }

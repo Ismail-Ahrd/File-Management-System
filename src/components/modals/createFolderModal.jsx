@@ -1,44 +1,32 @@
 import React, { useRef, useState } from "react";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Input, Link} from "@nextui-org/react";
 import { FiFilePlus, FiFolderPlus } from "react-icons/fi"
-import { useFileFolder } from "../../contexts/FileFolderContext";
 import { useAuth } from "../../contexts/AuthContext";
-import { addDocument } from "../../firebase/db";
+import { createFolder } from "../../firebase/storage";
+import { useParams } from "react-router-dom";
+import { decrypt } from "../../utils/crypto";
 
 
-export default function CreateFolderModal() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+export default function CreateFolderModal({setChanged}) {
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+  const {documentId} = useParams()
   const [folderName, setFolderName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const isInvalid = isFocused && folderName.length < 3;
   const { currentUser } = useAuth();
-  const { currentFolder, documents, setDocuments } = useFileFolder();
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const path = [...currentFolder.path];
-    path.push({
-      name: currentFolder.name,
-      id: currentFolder.id
-    })
     
     if (folderName.length >= 3) {
-      const data = {
-        name: folderName,
-        parent: currentFolder.id,
-        createdAt: new Date(),
-        createdBy: currentUser.displayName,
-        userId: currentUser.uid,
-        path: path,
-        updatedAt: new Date(),
-        lastAccessed: null ,
-        documentType: "folder"
-      }
-      const res = await addDocument(data);
-      setDocuments([...documents, res])
+      await createFolder(decrypt(documentId)+ `/${folderName}`)
+      setChanged(true)
     }
     setFolderName("")
+    onClose()
   }
+
   
 
   return (

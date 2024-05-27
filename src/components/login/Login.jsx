@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { Navigate, Link } from 'react-router-dom'
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../firebase/auth'
 import { useAuth } from '../../contexts/AuthContext'
-import Navbar from '../navbar/Navbar'
+import MyNavbar from '../navbar/MyNavbar'
+import { encrypt } from '../../utils/crypto'
 
 const Login = () => {
-    const { userLoggedIn } = useAuth()
+    const { userLoggedIn,currentUser } = useAuth()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -17,6 +18,7 @@ const Login = () => {
         if(!isSigningIn) {
             setIsSigningIn(true)
             await doSignInWithEmailAndPassword(email, password)
+            //setCurrentUser(res.user.uid)
             // doSendEmailVerification()
         }
     }
@@ -33,9 +35,8 @@ const Login = () => {
 
     return (
         <div>
-            
-            {userLoggedIn && (<Navigate to={'/dashboard'} replace={true} />)}
-            <Navbar />
+            {userLoggedIn && (<Navigate to={`/dashboard/${encrypt(currentUser.uid)}`} replace={true} />)}
+            <MyNavbar />
             <main className="w-full pt-10 flex self-center place-content-center place-items-center">
                 <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
                     <div className="text-center">

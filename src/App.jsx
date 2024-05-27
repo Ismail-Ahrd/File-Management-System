@@ -7,7 +7,6 @@ import Register from './components/register/Register';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/header/Header';
 import Dashboard from './components/dashboard/Dashboard';
-import Navbar from './components/navbar/Navbar';
 import CreatedFileComponent from './components/createdFileComponent/CreatedFileComponent';
 
 function App() {
@@ -28,12 +27,10 @@ function App() {
           <SideBar />
           <div className='flex-1 ml-60'>
             <Header />
-            
             <main className='mt-20'>
               <Routes>
-                <Route exact path="/dashboard" element={<Dashboard />} />
-                <Route exact path="/dashboard/:folderId" element={<Dashboard />} />
-                <Route exact path="/dashboard/file/:fileId" element={<CreatedFileComponent />} />
+                <Route exact path="/dashboard/file/:documentId" element={<CreatedFileComponent />} />
+                <Route exact path="/dashboard/:documentId" element={<Dashboard />} />
               </Routes>
             </main>
           </div>
