@@ -63,6 +63,17 @@ export const createFile = async (path, file) => {
     const fileRef = ref(storage, path)
     //const file = ref(newDir, file.name)
     await uploadBytes(fileRef, file)
+
+    // const db = getDatabase();
+    //     const fileCountRef = ref(db, 'fileCount');
+    //     set(fileCountRef, (currentCount) => {
+    //       return (currentCount || 0) + fileSize;
+    //     });
+    // onValue(fileCountRef, (snapshot) => {
+    //     const fileCount = snapshot.val();
+    //     console.log("File count:", fileCount);
+    //     // Use the file count value as needed in your application
+    //   });
 }
 
 

@@ -8,7 +8,7 @@ export default function Header({ setSearchValue, searchValue }) {
   const { currentUser, userLoggedIn } = useAuth();
 
   return (
-    <nav className='pt-3 ps-10 pe-14 bg-white min-h-16 flex items-center justify-between fixed top-0 z-10 md:w-[82.10%]'>
+    <nav className=' ps-10 pe-14 bg-white min-h-16 flex items-center justify-between fixed top-0 z-10 md:w-[82.10%]'>
       <div className="w-[500px] border">
         <Input
           radius="none"

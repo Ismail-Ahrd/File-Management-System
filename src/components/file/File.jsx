@@ -22,7 +22,7 @@ function File({ name, onClick, icon, size, setChanged,documentType }) {
         content={
           <div className="px-1 py-2">
             <div className="text-small font-bold ">{name}</div>
-            <div className="text-tiny">Size: {size}KB</div>
+            <div className="text-tiny">Size: {size}B</div>
           </div>
         }
         hidden={hidden}  

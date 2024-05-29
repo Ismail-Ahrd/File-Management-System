@@ -14,6 +14,7 @@ import { RiFolderVideoFill } from "react-icons/ri";
 import { MdAudioFile } from "react-icons/md";
 import { FaFilePdf } from "react-icons/fa";
 import Header from '../header/Header';
+import StorageProgress from '../progress/StorageProgress';
 
 export default function Dashboard() {
   const { currentUser } = useAuth();
@@ -95,6 +96,7 @@ export default function Dashboard() {
     <div className='w-[90%] mt-5 m-auto flex flex-col gap-4'>
       <Header setSearchValue={setSearchValue} searchText={searchValue} />
       <BreadCrumbs />
+      <StorageProgress/>
       <FileOperations setChanged={setChanged}/>
       <div className='flex flex-wrap gap-10 min-h-72'>
         {isLoading ? (

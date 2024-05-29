@@ -9,9 +9,7 @@ export default function MyNavbar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { userLoggedIn, currentUser } = useAuth();
 
-//   useEffect(() => {
-//     setCurrent(pathname);
-//   }, [pathname])
+
 
   const menuItems = [
     "Later",
@@ -28,26 +26,6 @@ export default function MyNavbar() {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-      <NavbarItem> 
-          <Link className="text-purple-500" href="#" aria-current="page">
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem> 
-          <Link className="text-purple-500" href="#project">
-            Project
-          </Link>
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link className="text-purple-500" href="#team" >
-            Team
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link className="text-purple-500" href="#contact">
-            Contact
-          </Link>
-        </NavbarItem>
         {
             userLoggedIn ?
             <>
@@ -58,10 +36,10 @@ export default function MyNavbar() {
             </>
             :
             <>
-                <Link to="/login" className="text-purple-500">
+                <Link to="/login" className="text-purple-700 hover:text-purple-400 duration-300">
                     Login
                 </Link>
-                <Link to="/register" className="text-purple-500">
+                <Link to="/register" className="bg-purple-700 hover:opacity-50 duration-300 text-white rounded-lg px-6 py-2">
                     Sign up
                 </Link>
             </>
