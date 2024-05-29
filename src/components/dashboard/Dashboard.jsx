@@ -72,7 +72,9 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    setChanged(false)
     fetchData();
+    console.log(currentUser)
   }, [changed, documentId]);
 
   const fetchData = async () => {

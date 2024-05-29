@@ -14,7 +14,17 @@ export default function UploadFileModal({setChanged}) {
 
   const handleUploadFile = async () => {
     setIsLoading(true)
-    await createFile(decrypt(documentId) + `/${selectedFile.name}`, selectedFile)
+    try {
+      await createFile(decrypt(documentId) + `/${selectedFile.name}`, selectedFile)
+    } catch (error) {
+      const a = document.createElement('a');
+      a.href = "https://buy.stripe.com/test_3cs7tR3ON9sR3oAcMM";
+      //a.setAttribute('download', name);
+      a.setAttribute('target', '_blank');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
     setIsLoading(false)
     setChanged(true)
     onClose()

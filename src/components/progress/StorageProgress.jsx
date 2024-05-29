@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { onValue, ref } from 'firebase/database';
+import { db } from '../../firebase/firebase';
 // import { getDatabase, ref, onValue } from "firebase/database";
 // import { getStorage, ref as storageRef } from "firebase/storage";
 
 const StorageProgress = () => {
   const [storageUsage, setStorageUsage] = useState(10000000);
   const [maxStorage, setMaxStorage] = useState(10 * 1024 * 1024); // 10MB in bytes
+  const {currentUser} = useAuth()
 
-  // useEffect(() => {
-  //   // const db = getDatabase();
-  //   // const fileCountRef = ref(db, 'fileCount');
+  useEffect(() => {
+    const fileCountRef = ref(db, `users/${currentUser.uid}/fileCount`)
 
-  //   // // Listen for changes in fileCount
-  //   // const unsubscribe = onValue(fileCountRef, (snapshot) => {
-  //   //   const fileCount = snapshot.val();
-  //   //   setStorageUsage(fileCount);
-  //   // });
+    // Listen for changes in fileCount
+    const unsubscribe = onValue(fileCountRef, (snapshot) => {
+      const fileCount = snapshot.val();
+      console.log("fileCount", fileCount)
+      setStorageUsage(fileCount);
+    });
 
-  //   // return () => {
-  //   //   // Unsubscribe when component unmounts
-  //   //   unsubscribe();
-  //   // };
-  // }, []);
+    return () => {
+      // Unsubscribe when component unmounts
+      unsubscribe();
+    };
+  }, []);
 
   // Calculate storage progress
   const progress = (storageUsage / maxStorage) * 100;

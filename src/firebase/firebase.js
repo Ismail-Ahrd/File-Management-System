@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getDatabase } from "firebase/database";
 
 
 const firebaseConfig = {
@@ -11,12 +11,13 @@ const firebaseConfig = {
     storageBucket: "file-management-system-79f7a.appspot.com",
     messagingSenderId: "1058126316260",
     appId: "1:1058126316260:web:0581e5f738e534f9c722f1",
-    measurementId: "G-3ZGEDZJFNV"
+    measurementId: "G-3ZGEDZJFNV",
+    databaseURL: "https://file-management-system-79f7a-default-rtdb.firebaseio.com"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app)
-const db = getFirestore(app);
+const db = getDatabase(app);
 const storage = getStorage();
 
 export { app, auth, db, storage };

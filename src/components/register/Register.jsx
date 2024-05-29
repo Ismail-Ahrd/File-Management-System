@@ -5,6 +5,7 @@ import { doCreateUserWithEmailAndPassword } from '../../firebase/auth'
 import { createRootFolder } from '../../firebase/storage'
 import MyNavbar from '../navbar/MyNavbar'
 import { updateProfile } from 'firebase/auth'
+import { encrypt } from '../../utils/crypto'
 
 const Register = () => {
 
@@ -36,7 +37,7 @@ const Register = () => {
 
     return (
         <>
-            {userLoggedIn && !loading && (<Navigate to={`/dashboard/${currentUser.uid}`} replace={true} />)}
+            {userLoggedIn && !loading && (<Navigate to={encrypt(currentUser.uid)} replace={true} />)}
             <MyNavbar />
             <main className="w-full pt-10 flex self-center place-content-center place-items-center">
                 <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">

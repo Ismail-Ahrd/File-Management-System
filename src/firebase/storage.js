@@ -1,12 +1,19 @@
 import {getDownloadURL, listAll, ref, uploadBytes, uploadString, getMetadata, deleteObject, getBlob } from "firebase/storage";
-import { storage } from "./firebase";
+import { db, storage } from "./firebase";
 import JSZip from "jszip";
+import { getDatabase,ref as dbRef, set, runTransaction, get } from "firebase/database";
 
 export const createRootFolder = async (userId) => {
     const newDir = ref(storage, userId)
     const ghostFile = ref(newDir, '.ghostfile')
     await uploadString(ghostFile, '')
+
+    // const db = getDatabase();
+    const fileCountRef = dbRef(db, `users/${userId}/fileCount`);
+    await set(fileCountRef, 0);
+
 }
+
 
 export const getDocuments = async (path) => {
     const { prefixes, items } = await listAll(ref(storage, path));
@@ -59,23 +66,40 @@ export const getFile = async (path) => {
 }
 
 
-export const createFile = async (path, file) => {
+export const createFileEmpty = async (path, file) => {
     const fileRef = ref(storage, path)
-    //const file = ref(newDir, file.name)
     await uploadBytes(fileRef, file)
-
-    // const db = getDatabase();
-    //     const fileCountRef = ref(db, 'fileCount');
-    //     set(fileCountRef, (currentCount) => {
-    //       return (currentCount || 0) + fileSize;
-    //     });
-    // onValue(fileCountRef, (snapshot) => {
-    //     const fileCount = snapshot.val();
-    //     console.log("File count:", fileCount);
-    //     // Use the file count value as needed in your application
-    //   });
 }
 
+export const createFile = async (path, file) => {
+    try {
+      const fileRef = ref(storage, path);
+      const userId = path.split('/')[0];
+      const fileCountRef = dbRef(db, `users/${userId}/fileCount`);
+  
+      // Get the current file count
+      const snapshot = await get(fileCountRef);
+      const currentCount = snapshot.exists() ? snapshot.val() : 0;
+  
+      if (currentCount + file?.size <= 10 * 1024 * 1024) {
+        // Upload the file
+        const uploadResult = await uploadBytes(fileRef, file);
+  
+        // Update the file count in a transaction to handle concurrency safely
+        await runTransaction(fileCountRef, (currentCount) => {
+          return (currentCount || 0) + file.size;
+        });
+  
+        console.log('File uploaded and count updated successfully');
+        return uploadResult;
+      } else {
+        throw new Error('Exceeds maximum storage limit of 10MB');
+      }
+    } catch (error) {
+      console.error('Error creating file:', error);
+      throw error;
+    }
+  };
 
 export const createFolder = async (path) => {
     //const storageRef = ref(storage, path)
@@ -86,26 +110,55 @@ export const createFolder = async (path) => {
 
 export const deleteDocument = async (path) => {
     const docRef = ref(storage, path)
+    //const list = path.split("/")
+    // //const name = list[list.length - 1]
+    //console.log(path)
+    const metadata = await getMetadata(ref(storage, path));
+    const size =  metadata.size
+
+    const userId = path.split('/')[0];
+    const fileCountRef = dbRef(db, `users/${userId}/fileCount`);
+
+    await runTransaction(fileCountRef, (currentCount) => {
+        return (currentCount || 0) - size;
+    });
     await deleteObject(docRef)
 }
 
-export async function deleteFolder(path) {
-    const folderRef = ref(storage, path)
+// export async function deleteFolder(path) {
+//     const folderRef = ref(storage, path)
+//     const listResult = await listAll(folderRef);
+//     const deletePromises = [];
+
+//     // Delete all files in the folder
+//     listResult.items.forEach((itemRef) => {
+//         deletePromises.push(deleteObject(itemRef));
+//     });
+
+//     // Recursively delete all subfolders
+//     listResult.prefixes.forEach((subfolderRef) => {
+//         deletePromises.push(deleteFolder(subfolderRef));
+//     });
+
+//     await Promise.all(deletePromises);
+// }
+export const deleteFolder = async (path) => {
+    const folderRef = ref(storage, path);
     const listResult = await listAll(folderRef);
     const deletePromises = [];
-
+  
     // Delete all files in the folder
     listResult.items.forEach((itemRef) => {
-        deletePromises.push(deleteObject(itemRef));
+      deletePromises.push(deleteDocument(itemRef.fullPath));
     });
-
+  
     // Recursively delete all subfolders
     listResult.prefixes.forEach((subfolderRef) => {
-        deletePromises.push(deleteFolder(subfolderRef));
+      deletePromises.push(deleteFolder(subfolderRef.fullPath));
     });
-
+  
     await Promise.all(deletePromises);
-}
+  }
 
 
 /////////////////////////////////////////////////////////////////////////////////

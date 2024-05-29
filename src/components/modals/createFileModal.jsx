@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, Checkbox, Input, Link} from "@nextui-org/react";
 import { FiFilePlus } from "react-icons/fi"
 import { useAuth } from "../../contexts/AuthContext";
-import { createFile } from "../../firebase/storage";
+import { createFileEmpty } from "../../firebase/storage";
 import { decrypt } from "../../utils/crypto";
 import { useParams } from "react-router-dom";
 
@@ -17,7 +17,7 @@ export default function CreateFileModal({setChanged}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const file = new Uint8Array([])
-    await createFile(decrypt(documentId) + `/${fileName}`, file)
+    await createFileEmpty(decrypt(documentId) + `/${fileName}`, file)
     onClose()
     setFileName("");
     setChanged(true)

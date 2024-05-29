@@ -6,7 +6,7 @@ const FileDropzone = ({selectedFile, setSelectedFile}) => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log(file.type)
+    console.log(file.size)
     updateFile(file);
   };
 
