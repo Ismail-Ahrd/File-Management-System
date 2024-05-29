@@ -1,6 +1,6 @@
 import React from 'react'
 import {Avatar, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem} from "@nextui-org/react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { doSignOut } from '../../firebase/auth';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -26,6 +26,9 @@ export default function AvatarDropdown() {
                 <p className="font-semibold">Signed in as {userLoggedIn ? currentUser.displayName : null}</p>
                 <p className="font-semibold">{userLoggedIn ? currentUser.email : null}</p>
             </DropdownItem>
+           
+            <DropdownItem  key="profile"> <Link to={"/dashboard/profile"}>Profile</Link></DropdownItem>
+
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
             <DropdownItem key="logout" color="danger" onClick={() => {
                 doSignOut().then(() => {

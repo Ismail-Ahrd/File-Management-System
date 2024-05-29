@@ -10,6 +10,8 @@ import { useParams } from 'react-router-dom';
 import { decrypt } from '../../utils/crypto';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
+import { ref } from 'firebase/storage';
+import { storage } from '../../firebase/firebase';
 
 export default function Actions({setHidden, name, setChanged, type}) {
   const [open,setOpen]=useState(false);
@@ -19,10 +21,8 @@ export default function Actions({setHidden, name, setChanged, type}) {
   
   const handleDownloadFolder = async () => {
     try {
-      const zip = new JSZip();
-      await downloadFolderAsZip(decrypt(documentId) + `/${name}`, zip);
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
-      saveAs(zipBlob, name+'.zip');
+      const path=decrypt(documentId) + `/${name}`;
+      await downloadFolderAsZip(path,path.length);
     } catch (error) {
       console.error('Error downloading folder as zip', error);
     }
@@ -32,18 +32,9 @@ export default function Actions({setHidden, name, setChanged, type}) {
   
   const handleDownload = async () => {
     try {
-        const blob = await downloadFile(decrypt(documentId) + `/${name}`);
-        const url = URL.createObjectURL(blob);
-        console.log(url)
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+      await downloadFolderAsZip(decrypt(documentId) + `/${name}`);
     } catch (error) {
-        console.error('Error downloading file', error);
+      console.error('Error downloading folder as zip', error);
     }
   };
   

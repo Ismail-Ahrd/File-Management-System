@@ -1,5 +1,6 @@
 import {getDownloadURL, listAll, ref, uploadBytes, uploadString, getMetadata, deleteObject, getBlob } from "firebase/storage";
 import { storage } from "./firebase";
+import JSZip from "jszip";
 
 export const createRootFolder = async (userId) => {
     const newDir = ref(storage, userId)
@@ -95,22 +96,49 @@ export async function deleteFolder(path) {
     await Promise.all(deletePromises);
 }
 
-export const downloadFolderAsZip = async (folderPath, zip) => {
-    const folderRef = ref(storage, folderPath);
-    const folderContents = await listAll(folderRef);
-  
-    for (const itemRef of folderContents.items) {
-      if (itemRef.contentType === 'application/octet-stream') {
-        const blob = await getBlob(itemRef);
-        const filePath = itemRef.fullPath.replace(folderPath, '');
-        zip.file(filePath, blob);
-      } else {
-        const subFolderPath = itemRef.fullPath.replace(folderPath, '');
-        const subFolderZip = zip.folder(subFolderPath);
-        await downloadFolderAsZip(itemRef.fullPath, subFolderZip);
-      }
-    }
+
+/////////////////////////////////////////////////////////////////////////////////
+
+const addFilesFromDirectoryToZip = async (directoryPath = "", zip,length) => {
+ 
+  const directoryContentsRef = ref(
+    storage,
+    directoryPath
+  );
+  const directoryContents = await listAll(directoryContentsRef);
+
+  for (const file of directoryContents.items) {
+    console.log("filefile");
+    const fileRef = ref(storage, file.fullPath);
+    const fileBlob = await getBlob(fileRef)
+    // console.log(file.fullPath);
+    // console.log(directoryPath);
+    // console.log("ziiiiiiiiiiiiiip");
+    // console.log(file.fullPath.substring(length,file.fullPath.length));
+    zip.file(file.fullPath.substring(length,file.fullPath.length), fileBlob);
+  }
+
+  for (const folder of directoryContents.prefixes) {
+    // console.log("folderfolder");
+    // console.log(folder.fullPath);
+    // console.log(directoryPath);
+    await addFilesFromDirectoryToZip(folder.fullPath, zip,length);
+  };
 };
+
+export const downloadFolderAsZip = async (directoryPath = "",length) => {
+  const zip = new JSZip();
+
+  await addFilesFromDirectoryToZip(directoryPath, zip,length);
+
+  const blob = await zip.generateAsync({ type: "blob" });
+//   console.log(directoryPath);
+  const name = directoryPath.split('/').pop();
+  saveAs(blob, name);
+};
+
+//////////////////////////////////////////////
+  
 
 export const getDownloadURLFile = async (path) => {
     const refFile = ref(storage, path)

@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Header from './components/header/Header';
 import Dashboard from './components/dashboard/Dashboard';
 import CreatedFileComponent from './components/createdFileComponent/CreatedFileComponent';
+import Profile from './components/profile/Profile';
 
 function App() {
   const { userLoggedIn } = useAuth();
@@ -26,9 +27,9 @@ function App() {
         <div className='flex'>
           <SideBar />
           <div className='flex-1 ml-60'>
-            <Header />
             <main className='mt-20'>
               <Routes>
+                <Route exact path="/dashboard/profile" element={<Profile />} />
                 <Route exact path="/dashboard/file/:documentId" element={<CreatedFileComponent />} />
                 <Route exact path="/dashboard/:documentId" element={<Dashboard />} />
               </Routes>
