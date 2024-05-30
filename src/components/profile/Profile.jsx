@@ -4,6 +4,7 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useAuth } from '../../contexts/AuthContext';
 import { storage } from '../../firebase/firebase';
 import { FaSpinner } from 'react-icons/fa';
+import Header from '../header/Header';
 
 const UserProfile = () => {
   const { currentUser, setCurrentUser } = useAuth();
@@ -100,83 +101,86 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="max-w-lg flex flex-col gap-2 mx-auto p-4 bg-white rounded-lg shadow-md">
-      <h2 className="text-3xl  font-semibold">User Profile</h2>
-      <div className="w-40 h-40 self-center rounded-full overflow-hidden ">
-        {currentUser.photoURL ? (
-          <img src={currentUser.photoURL} alt="Profile" className="w-full h-full object-cover" />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-4xl font-semibold">
-            <i className="fas fa-user"></i>
-          </div>
-        )}
-      </div>
-      <div className=" flex items-center">
-        <div>
-          <p className="font-semibold flex gap-3">Username:<span className='text-blue-600'>{currentUser.displayName}</span></p>
-          {editingUsername ? (
-            <div className="flex items-center">
-              <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} className="border border-gray-300 rounded px-3 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-              <button onClick={handleChangeUsername} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
-              </button>
-              <button onClick={() => setEditingUsername(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
-                Cancel
-              </button>
-            </div>
+    <>
+      <Header hasInput={false}/>
+      <div className="max-w-lg flex flex-col gap-2 mx-auto p-4 bg-white rounded-lg shadow-md">
+        {/* <h2 className="text-3xl  font-semibold">User Profile</h2> */}
+        <div className="w-32 h-32 self-center rounded-full overflow-hidden ">
+          {currentUser.photoURL ? (
+            <img src={currentUser.photoURL} alt="Profile" className="w-full h-full object-cover" />
           ) : (
-            <button onClick={() => setEditingUsername(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
+            <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-4xl font-semibold">
+              <i className="fas fa-user"></i>
+            </div>
           )}
         </div>
-      </div>
-      <div className="">
-        <p className="font-semibold flex gap-3">Email: <span className='text-blue-600'>{currentUser.email}</span></p>
-        {editingEmail ? (
-          <div className="flex flex-col">
-            <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <input type="text" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="New Email" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <div className="flex">
-              <button onClick={handleChangeEmail} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
-              </button>
-              <button onClick={() => setEditingEmail(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
-                Cancel
-              </button>
-            </div>
+        <div className=" flex items-center">
+          <div>
+            <p className="font-semibold flex gap-3">Username:<span className='text-gray-500'>{currentUser.displayName}</span></p>
+            {editingUsername ? (
+              <div className="flex items-center">
+                <input type="text" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} className="border border-gray-300 rounded px-3 py-2 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                <button onClick={handleChangeUsername} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
+                  {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
+                </button>
+                <button onClick={() => setEditingUsername(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button onClick={() => setEditingUsername(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
+            )}
           </div>
-        ) : (
-          <button onClick={() => setEditingEmail(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
-        )}
-      </div>
-      <div className="">
-        <p className="font-semibold">Change Password:</p>
-        {editingPassword ? (
-          <div className="flex flex-col">
-            <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <div className="flex">
-              <button onClick={handleChangePassword} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
-                {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
-              </button>
-              <button onClick={() => setEditingPassword(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
-                Cancel
-              </button>
+        </div>
+        <div className="">
+          <p className="font-semibold flex gap-3">Email: <span className='text-gray-500'>{currentUser.email}</span></p>
+          {editingEmail ? (
+            <div className="flex flex-col">
+              <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <input type="text" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} placeholder="New Email" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <div className="flex">
+                <button onClick={handleChangeEmail} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
+                  {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
+                </button>
+                <button onClick={() => setEditingEmail(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
+                  Cancel
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
-          <button onClick={() => setEditingPassword(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
-        )}
+          ) : (
+            <button onClick={() => setEditingEmail(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
+          )}
+        </div>
+        <div className="">
+          <p className="font-semibold">Change Password:</p>
+          {editingPassword ? (
+            <div className="flex flex-col">
+              <input type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Current Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="New Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm Password" className="border border-gray-300 rounded px-3 py-2 mb-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+              <div className="flex">
+                <button onClick={handleChangePassword} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={loading}>
+                  {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Save'}
+                </button>
+                <button onClick={() => setEditingPassword(false)} className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-red-400 ml-2">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setEditingPassword(true)} className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">Edit</button>
+          )}
+        </div>
+        <div className="mb-6">
+          <label className="font-semibold block">Change Profile Image:</label>
+          <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={imageLoading} />
+          <button onClick={handleImageUpload} className="ms-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mt-2" disabled={imageLoading}>
+            {imageLoading ? <FaSpinner className="animate-spin mr-2" /> : 'Submit'}
+          </button>
+        </div>
+        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
       </div>
-      <div className="mb-6">
-        <label className="font-semibold block">Change Profile Image:</label>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" disabled={imageLoading} />
-        <button onClick={handleImageUpload} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 mt-2" disabled={imageLoading}>
-          {imageLoading ? <FaSpinner className="animate-spin mr-2" /> : 'Submit'}
-        </button>
-      </div>
-      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-    </div>
+    </>
   );
 };
 

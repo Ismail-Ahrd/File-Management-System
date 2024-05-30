@@ -5,16 +5,13 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import './index.css'
-import { FileFolderProvider } from "./contexts/FileFolderContext.jsx";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <NextUIProvider>
       <BrowserRouter>
         <AuthProvider>
-          <FileFolderProvider>
-            <App />
-          </FileFolderProvider>
+          <App />
         </AuthProvider>
       </BrowserRouter>
     </NextUIProvider>

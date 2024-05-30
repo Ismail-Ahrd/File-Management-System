@@ -4,6 +4,7 @@ import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../firebase
 import { useAuth } from '../../contexts/AuthContext'
 import MyNavbar from '../navbar/MyNavbar'
 import { encrypt } from '../../utils/crypto'
+import { createRootFolder } from '../../firebase/storage'
 
 const Login = () => {
     const { userLoggedIn,currentUser } = useAuth()
@@ -18,18 +19,15 @@ const Login = () => {
         if(!isSigningIn) {
             setIsSigningIn(true)
             await doSignInWithEmailAndPassword(email, password)
-            //setCurrentUser(res.user.uid)
             // doSendEmailVerification()
         }
     }
 
-    const onGoogleSignIn = (e) => {
+    const onGoogleSignIn = async (e) => {
         e.preventDefault()
         if (!isSigningIn) {
             setIsSigningIn(true)
-            doSignInWithGoogle().catch(err => {
-                setIsSigningIn(false)
-            })
+            await doSignInWithGoogle()
         }
     }
 

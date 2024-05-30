@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { onValue, ref } from 'firebase/database';
 import { db } from '../../firebase/firebase';
-// import { getDatabase, ref, onValue } from "firebase/database";
-// import { getStorage, ref as storageRef } from "firebase/storage";
 
 const StorageProgress = () => {
   const [storageUsage, setStorageUsage] = useState(10000000);
@@ -16,7 +14,7 @@ const StorageProgress = () => {
     // Listen for changes in fileCount
     const unsubscribe = onValue(fileCountRef, (snapshot) => {
       const fileCount = snapshot.val();
-      console.log("fileCount", fileCount)
+      //console.log("fileCount", fileCount)
       setStorageUsage(fileCount);
     });
 

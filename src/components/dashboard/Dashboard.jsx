@@ -74,8 +74,7 @@ export default function Dashboard({filter}) {
   useEffect(() => {
     setChanged(false)
     fetchData();
-    //console.log(currentUser)
-    console.log(filter);
+    //console.log(currentUser.photoURL)
   }, [changed, documentId, filter]);
 
   const fetchData = async () => {
@@ -101,7 +100,7 @@ export default function Dashboard({filter}) {
 
   return (
     <div className='w-[90%] mt-5 m-auto flex flex-col gap-5'>
-      <Header setSearchValue={setSearchValue} searchText={searchValue} />
+      <Header setSearchValue={setSearchValue} searchText={searchValue} hasInput={true}/>
       <BreadCrumbs />
       {/* <StorageProgress/> */}
       <FileOperations setChanged={setChanged}/>

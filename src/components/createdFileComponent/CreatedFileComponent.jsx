@@ -9,6 +9,7 @@ import { IoSaveSharp } from 'react-icons/io5';
 import CodeEditor from './CodeEditor';
 import { createFile, getFile } from '../../firebase/storage';
 import { decrypt } from '../../utils/crypto';
+import Header from '../header/Header';
 
 
 
@@ -62,6 +63,7 @@ export default function CreatedFileComponent() {
 
   return (
     <div className='w-[90%] mt-5 m-auto flex flex-col gap-5'>
+      <Header hasInput={false}/>
         {
             isLoading ?
               <BreadCrumbs/>
@@ -102,7 +104,7 @@ export default function CreatedFileComponent() {
                         className='border border-gray-500 bg-transparent text-gray-900'
                         radius='sm' 
                         startContent={<FaArrowLeft className='text-xl text-gray-900'/>}
-                        onPress={() => {navigate(`/dashboard/${currentFolder.id}`)}}
+                        onPress={() => {navigate(-1)}}
                     >
                         Go back
                     </Button>

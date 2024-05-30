@@ -7,7 +7,6 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function AvatarDropdown() {
   const { currentUser, userLoggedIn } = useAuth()
   const navigate = useNavigate()   
-  console.log(currentUser.displayName)
   return (
     <Dropdown placement="bottom-end">
         <DropdownTrigger>

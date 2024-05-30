@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { createRootFolder } from "./storage";
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
   return createUserWithEmailAndPassword(auth, email, password);
@@ -18,11 +19,19 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 };
 
 export const doSignInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider();
-  const result = await signInWithPopup(auth, provider);
-  const user = result.user;
+  try {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const isNewUser = result.additionalUserInfo.isNewUser;
+    
+    if (isNewUser) {
+      await createRootFolder(user.uid)
+    } 
 
-  // add user to firestore
+  } catch (error) {
+    console.error("Error signing in with Google:", error);
+  }
 };
 
 export const doSignOut = () => {
