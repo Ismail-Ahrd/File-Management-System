@@ -16,7 +16,7 @@ import { FaFilePdf } from "react-icons/fa";
 import Header from '../header/Header';
 import StorageProgress from '../progress/StorageProgress';
 
-export default function Dashboard() {
+export default function Dashboard({filter}) {
   const { currentUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -74,14 +74,19 @@ export default function Dashboard() {
   useEffect(() => {
     setChanged(false)
     fetchData();
-    console.log(currentUser)
-  }, [changed, documentId]);
+    //console.log(currentUser)
+    console.log(filter);
+  }, [changed, documentId, filter]);
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
       const res = await getDocuments(decrypt(documentId) + "/");
-      setDocuments(res);
+      const docs = res.filter(doc => {
+        if (filter === "all") return doc;
+        return doc.documentType === filter
+      })
+      setDocuments(docs);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -95,14 +100,14 @@ export default function Dashboard() {
   }, [searchValue, documents]);
 
   return (
-    <div className='w-[90%] mt-5 m-auto flex flex-col gap-4'>
+    <div className='w-[90%] mt-5 m-auto flex flex-col gap-5'>
       <Header setSearchValue={setSearchValue} searchText={searchValue} />
       <BreadCrumbs />
-      <StorageProgress/>
+      {/* <StorageProgress/> */}
       <FileOperations setChanged={setChanged}/>
-      <div className='flex flex-wrap gap-10 min-h-72'>
+      <div className='flex flex-wrap gap-10 mb-20'>
         {isLoading ? (
-          <div className='m-auto'>
+          <div className='m-auto mt-32'>
             <Spinner label="Loading..." size='lg' classNames={{
               circle1: 'w-20 h-20',
               circle2: 'w-20 h-20',

@@ -33,9 +33,9 @@ export default function UploadFileModal({setChanged}) {
   return (
     <>
       <Button 
-            className='border border-gray-500 bg-transparent text-gray-900'
+            className='border border-purple-950 bg-transparent text-purple-950'
             radius='sm' 
-            startContent={<MdOutlineUploadFile className='text-xl text-gray-900'/>}
+            startContent={<MdOutlineUploadFile className='text-xl text-purple-950'/>}
             onPress={onOpen}
         >Upload file</Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top">

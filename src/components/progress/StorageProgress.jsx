@@ -32,23 +32,25 @@ const StorageProgress = () => {
   const storageUsageMB=(storageUsage/(1024 * 1024))
 
   return (
-    <div className="relative flex gap-3 flex-row items-center">
-      <div className="w-[70%] bg-gray-200 rounded-full relative">
-        <div
-          className="bg-blue-500 h-5 rounded-full"
-          style={{ width: `${progress}%` }}
-          role="progressbar"
-          aria-valuenow={progress}
-          aria-valuemin="0"
-          aria-valuemax="100"
-        />
-        <p className={`absolute top-1/2 left-[calc(${progressInt}%-55px)] -translate-y-1/2 text-sm`}>
-          {storageUsageMB.toFixed(2)} MB
-        </p>
+    <div className="relative flex flex-col gap-2">
+      <div className='flex gap-3 flex-row items-center ms-3'>
+        <div className="w-[70%] bg-gray-200 rounded-full relative">
+          <div
+            className="bg-purple-500 h-4 rounded-full"
+            style={{ width: `${progress}%` }}
+            role="progressbar"
+            aria-valuenow={progress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          />
+          <p className={`absolute top-1/2 left-[calc(${progressInt}%-55px)] -translate-y-1/2 text-[12px] ms-2 text-white `}>
+            {storageUsageMB.toFixed(2)} MB
+          </p>
+        </div>
+        <p className=" text-sm">10 MB</p>
       </div>
-      <p className=" text-sm">10 MB</p>
 
-      <p className=" text-sm">{progress.toFixed(2)}% used</p>
+      <p className="text-sm m-auto">{progress.toFixed(2)}% used</p>
     </div>
   );
 };

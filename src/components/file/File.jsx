@@ -27,9 +27,9 @@ function File({ name, onClick, icon, size, setChanged,documentType }) {
         }
         hidden={hidden}  
       >
-        <div onClick={onClick} className="w-40 h-40 relative flex flex-col items-center justify-center bg-white rounded-md shadow-md border border-gray-300 cursor-pointer hover:border-gray-500 hover:bg-gray-100">
+        <div onClick={onClick} className="w-40 h-40 relative flex flex-col items-center justify-center bg-white rounded-md shadow-md border border-purple-300 cursor-pointer hover:border-purple-500 hover:bg-purple-100">
           {icon}
-          <p className="text-gray-700 text-lg mt-2">{truncateName(name, 14)}</p>
+          <p className="text-gray-700 text-md mt-2">{truncateName(name, 10)}</p>
           <Actions setHidden={setHidden} name={name} setChanged={setChanged} type={documentType}/>
         </div>
       </Tooltip>

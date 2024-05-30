@@ -26,7 +26,7 @@ function Folder({ name, onClick, setChanged, documentType }) {
         }  
         hidden={hidden}
       >
-        <div onClick={onClick} className="w-40 h-40 relative flex flex-col items-center justify-center bg-white rounded-md shadow-md border border-gray-300 cursor-pointer hover:border-gray-500 hover:bg-gray-100">
+        <div onClick={onClick}  className="w-40 h-40 relative flex flex-col items-center justify-center bg-white rounded-md shadow-md border border-purple-300 cursor-pointer hover:border-purple-500 hover:bg-purple-100">
           <FaFolder className="text-[#6B7280] text-7xl"/>
           <p className="text-gray-700 text-lg mt-2">{truncateName(name, 14)}</p>
           <Actions setHidden={setHidden} setChanged={setChanged} name={name} type={documentType}/>

@@ -32,10 +32,10 @@ export default function CreateFolderModal({setChanged}) {
   return (
     <>
       <Button 
-        className='border border-gray-500 bg-transparent text-gray-900'
+        className='border border-purple-950 bg-transparent text-purple-950'
         onPress={onOpen}
         radius='sm' 
-        startContent={<FiFolderPlus className='text-xl text-gray-900'/>}
+        startContent={<FiFolderPlus className='text-xl text-purple-950'/>}
       >
         Create folder
       </Button>

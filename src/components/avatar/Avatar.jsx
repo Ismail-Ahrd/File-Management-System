@@ -27,7 +27,7 @@ export default function AvatarDropdown() {
                 <p className="font-semibold">{userLoggedIn ? currentUser.email : null}</p>
             </DropdownItem>
            
-            <DropdownItem  key="profile"> <Link to={"/dashboard/profile"}>Profile</Link></DropdownItem>
+            <DropdownItem  key="profile" onPress={() => navigate("/dashboard/profile")}>Profile</DropdownItem>
 
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
             <DropdownItem key="logout" color="danger" onClick={() => {

@@ -8,8 +8,8 @@ export default function Header({ setSearchValue, searchValue }) {
   const { currentUser, userLoggedIn } = useAuth();
 
   return (
-    <nav className=' ps-10 pe-14 bg-white min-h-16 flex items-center justify-between fixed top-0 z-10 md:w-[82.10%]'>
-      <div className="w-[500px] border">
+    <nav className='bg-white min-h-16 flex items-center justify-between fixed top-0 right-1 px-10 z-10 md:w-[82.10%]'>
+      <div className="w-[400px] border">
         <Input
           radius="none"
           type="text"
@@ -21,7 +21,7 @@ export default function Header({ setSearchValue, searchValue }) {
           classNames={{
             input: "text-base",
             inputWrapper: [
-              "h-[45px]"
+              "h-[35px]"
             ],
           }}
         />
