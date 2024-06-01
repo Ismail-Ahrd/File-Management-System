@@ -172,6 +172,9 @@ const addFilesFromDirectoryToZip = async (directoryPath = "", zip,length) => {
   const directoryContents = await listAll(directoryContentsRef);
 
   for (const file of directoryContents.items) {
+    if(file.name==".ghostfile"){
+      continue;
+    }
     console.log("filefile");
     const fileRef = ref(storage, file.fullPath);
     const fileBlob = await getBlob(fileRef)
