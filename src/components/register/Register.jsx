@@ -6,6 +6,7 @@ import { createRootFolder } from '../../firebase/storage'
 import MyNavbar from '../navbar/MyNavbar'
 import { updateProfile } from 'firebase/auth'
 import { encrypt } from '../../utils/crypto'
+import toast from 'react-hot-toast';
 
 const Register = () => {
 
@@ -26,18 +27,32 @@ const Register = () => {
         setLoading(true)
         e.preventDefault()
         if(!isRegistering) {
-            setIsRegistering(true)
-            const res = await doCreateUserWithEmailAndPassword(email, password)
-            await updateProfile(res.user, {displayName: username})
-            await createRootFolder(res.user.uid)
-            setLoading(false)
-            window.location.reload()
-        }
+            if (password.length < 6) {
+                toast.error("Password should be at least 6 charachters.")
+            } else if (password !== confirmPassword) {
+                toast.error("Password and Confirm Password are not the same.")
+            } else { 
+                try {
+                    setIsRegistering(true)
+                    const res = await doCreateUserWithEmailAndPassword(email, password)
+                    await updateProfile(res.user, {displayName: username})
+                    await createRootFolder(res.user.uid)
+                    setLoading(false)
+                    window.location.reload()
+                } catch (error) {
+                    setIsRegistering(false)
+                    //console.log(error.message)
+                    const message = error.message.split(" ")[2].split("/")[1].split(")")[0]
+                    //console.log(message)
+                    toast.error(message)
+                }
+            }
+        }   
     }
 
     return (
         <>
-            {userLoggedIn && !loading && (<Navigate to={encrypt(currentUser.uid)} replace={true} />)}
+            {userLoggedIn && !loading && (<Navigate to={`/dashboard/${encrypt(currentUser.uid)}`} replace={true} />)}
             <MyNavbar />
             <main className="w-full pt-10 flex self-center place-content-center place-items-center">
                 <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">

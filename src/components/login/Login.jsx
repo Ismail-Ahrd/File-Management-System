@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import MyNavbar from '../navbar/MyNavbar'
 import { encrypt } from '../../utils/crypto'
 import { createRootFolder } from '../../firebase/storage'
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const { userLoggedIn,currentUser } = useAuth()
@@ -16,10 +17,18 @@ const Login = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        if(!isSigningIn) {
-            setIsSigningIn(true)
-            await doSignInWithEmailAndPassword(email, password)
-            // doSendEmailVerification()
+        try {
+            if(!isSigningIn) {
+                setIsSigningIn(true)
+                await doSignInWithEmailAndPassword(email, password)
+                // doSendEmailVerification()
+            }
+        } catch (error) {
+            toast.error("Invalid email or password")
+            setIsSigningIn(false)
+            setEmail('')
+            setPassword('')
+            console.log(error.message)
         }
     }
 

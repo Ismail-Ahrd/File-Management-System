@@ -10,6 +10,8 @@ import Dashboard from './components/dashboard/Dashboard';
 import CreatedFileComponent from './components/createdFileComponent/CreatedFileComponent';
 import Profile from './components/profile/Profile';
 import { useState } from 'react';
+import { Toaster } from 'react-hot-toast';
+import NotFoundPage from './components/notFoundPage/NotFoundPage';
 
 function App() {
   const { userLoggedIn } = useAuth();
@@ -18,14 +20,8 @@ function App() {
   return (
     <>
       
-      <Routes>
-        <Route exact path="/login" element={ <Login />} />
-        <Route exact path="/register" element={ <Register />} />
-        <Route exact path="/" element={ <HomePage />} />
-      </Routes>
-
       {
-        userLoggedIn && pathname.startsWith("/dashboard") ?
+        userLoggedIn && pathname.startsWith("/dashboard/") ?
         <div className='flex'>
           <SideBar setFilter={setFilter} filter={filter} />
           <div className='flex-1 ml-60'>
@@ -39,8 +35,18 @@ function App() {
           </div>
         </div>
         :
-        null
+        <>
+        <Routes>
+          <Route exact path="/login" element={ <Login />} />
+          <Route exact path="/register" element={ <Register />} />
+          <Route exact path="/" element={ <HomePage />} />
+          <Route  exact path='/notFound' element={<NotFoundPage />}/>
+          <Route  exact path='*' element={<NotFoundPage />}/>
+        </Routes>
+        </>
       }
+      
+      <Toaster position='top-center'/>
     </>
   )
 }

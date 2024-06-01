@@ -73,6 +73,9 @@ export default function Dashboard({filter}) {
 
   useEffect(() => {
     setChanged(false)
+    if (!(currentUser.uid === decrypt(documentId))) {
+      navigate("/notFound")
+    }
     fetchData();
     //console.log(currentUser.photoURL)
   }, [changed, documentId, filter]);
