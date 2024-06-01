@@ -8,7 +8,6 @@ export const createRootFolder = async (userId) => {
     const ghostFile = ref(newDir, '.ghostfile')
     await uploadString(ghostFile, '')
 
-    // const db = getDatabase();
     const fileCountRef = dbRef(db, `users/${userId}/fileCount`);
     await set(fileCountRef, 0);
 

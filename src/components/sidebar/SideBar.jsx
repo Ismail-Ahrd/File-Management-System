@@ -17,7 +17,7 @@ export default function SideBar({setFilter, filter}) {
   
 
   return (
-    <div className='fixed w-60 border-r-purple-500 border-r-1 h-screen flex flex-col justify-between pt-5 bg-white pb-4'>
+    <div className='fixed w-60 border-r-purple-500 border-r-1 h-screen flex flex-col justify-between pt-5 bg-white pb-4 z-50'>
         <div className='flex flex-col gap-4'>
           <Link to="/" className='self-center text-2xl font-semibold whitespace-nowrap dark:text-white text-purple-500 mb-1'>
               LOGO

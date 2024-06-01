@@ -41,8 +41,9 @@ const UserProfile = () => {
       const auth = getAuth();
       const user = auth.currentUser;
       const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(user, credential);
-      await updateEmail(user, newEmail);
+      const res = await reauthenticateWithCredential(user, credential);
+      //console.log(res)
+      await updateEmail(res.user, newEmail);
       setEditingEmail(false);
       setCurrentUser({ ...currentUser, email: newEmail });
     } catch (error) {
