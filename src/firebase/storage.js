@@ -15,15 +15,6 @@ export const createRootFolder = async (userId) => {
 
 }
 
-function stringToFile(stringContent, fileName, contentType) {
-  const blob = new Blob([stringContent], { type: contentType });
-  const file = new File([blob], fileName);
-  return file;
-}
-// const newMetadata = {
-//   cacheControl: 'public,max-age=300',
-//   contentType: 'image/jpeg'
-// };
 
 export const renameDocument=async(path,name, newName)=>{
   //console.log(path);
@@ -31,13 +22,16 @@ export const renameDocument=async(path,name, newName)=>{
   const newRef=ref(storage,path+`/${newName}`)
   const url = await getDownloadURL(oldRef)
   const res = await fetch(url)
-  const file=stringToFile(await res.text())
+
+  const file = new File([await res.blob()], name);
+  
   const oldMetadata = await getMetadata(oldRef);
   const contentType = oldMetadata.contentType;
   
   const metadata = {
     contentType: contentType,
   };
+
 
   await createFile2(path+`/${newName}`,file, metadata)
   await deleteDocument(path+`/${name}`)
