@@ -15,13 +15,14 @@ import { decrypt } from '../../utils/crypto';
 import { createURL, deleteDocument, deleteFolder, downloadFolderAsZip, renameDocument } from '../../firebase/storage';
 import { ref } from 'firebase/storage';
 import { storage } from '../../firebase/firebase';
+import { FaShare } from "react-icons/fa";
 
 export default function Actions({ setHidden, name, setChanged, type }) {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
 
   const [isFocused, setIsFocused] = useState(false);
-  const [fileName, setFileName] = useState('');
+  const [fileName, setFileName] = useState(name);
   const isInvalid = isFocused && fileName.split('.')[0].length < 3;
   const modalRef = useRef(null);
   const openModalButtonRef = useRef(null);
@@ -133,7 +134,7 @@ export default function Actions({ setHidden, name, setChanged, type }) {
               color={isInvalid ? 'danger' : ''}
               errorMessage={isInvalid && 'File name must be at least 3 characters'}
             />
-            <div className="flex justify-end mt-4">
+            <div className="flex justify-end gap-2 mt-4">
               <Button color="danger" variant="flat" onClick={handleModalClose}>
                 Close
               </Button>
@@ -216,8 +217,8 @@ export default function Actions({ setHidden, name, setChanged, type }) {
           </DropdownItem>
           {type=="file"&&(
             <DropdownItem
-              startContent={<MdModeEdit size={20} color="blue" />}
-              className="text-blue-600 font-bold"
+              startContent={<FaShare size={20} color="gray" />}
+              className="text-gray-600 font-bold"
               onPress={() => setShowModal2(true)}
             >
               Share URL

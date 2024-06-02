@@ -24,8 +24,7 @@ function stringToFile(stringContent, fileName, contentType) {
 // };
 
 export const renameDocument=async(path,name, newName)=>{
-
-  console.log(path);
+  //console.log(path);
   const oldRef = ref(storage, path+`/${name}`);
   const newRef=ref(storage,path+`/${newName}`)
   const url = await getDownloadURL(oldRef)
