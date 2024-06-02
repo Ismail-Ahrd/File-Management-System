@@ -32,11 +32,50 @@ export const renameDocument=async(path,name, newName)=>{
   const url = await getDownloadURL(oldRef)
   const res = await fetch(url)
   const file=stringToFile(await res.text())
-  await createFile(path+`/${newName}`,file)
+  const oldMetadata = await getMetadata(oldRef);
+  const contentType = oldMetadata.contentType;
+  
+  const metadata = {
+    contentType: contentType,
+  };
+
+  await createFile2(path+`/${newName}`,file, metadata)
   await deleteDocument(path+`/${name}`)
 
 
 }
+
+export const createFile2 = async (path, file, contentType) => {
+  try {
+    const fileRef = ref(storage, path);
+    const userId = path.split('/')[0];
+    const fileCountRef = dbRef(db, `users/${userId}/fileCount`);
+
+    // Get the current file count
+    const snapshot = await get(fileCountRef);
+    const currentCount = snapshot.exists() ? snapshot.val() : 0;
+
+    if (currentCount + file?.size <= 10 * 1024 * 1024) {
+      // Upload the file
+      const uploadResult = await uploadBytes(fileRef, file, contentType);
+
+      // Update the file count in a transaction to handle concurrency safely
+      await runTransaction(fileCountRef, (currentCount) => {
+        return (currentCount || 0) + file.size;
+      });
+
+      console.log('File uploaded and count updated successfully');
+      return uploadResult;
+    } else {
+      throw new Error('Exceeds maximum storage limit of 10MB');
+    }
+  } catch (error) {
+    console.error('Error creating file:', error);
+    throw error;
+  }
+};
+
+
 
 
 export const createURL=async(path)=>{
