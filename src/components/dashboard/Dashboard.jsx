@@ -73,7 +73,7 @@ export default function Dashboard({filter}) {
 
   useEffect(() => {
     setChanged(false)
-    if (!(currentUser.uid === decrypt(documentId))) {
+    if (!(currentUser.uid ===  decrypt(documentId).split("/")[0])) {
       navigate("/notFound")
     }
     fetchData();
