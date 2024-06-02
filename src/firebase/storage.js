@@ -2,6 +2,8 @@ import {getDownloadURL,  listAll, ref, uploadBytes, uploadString, getMetadata, d
 import { db, storage } from "./firebase";
 import JSZip from "jszip";
 import { getDatabase,ref as dbRef, set, runTransaction, get } from "firebase/database";
+import { saveAs } from 'file-saver';
+
 
 export const createRootFolder = async (userId) => {
     const newDir = ref(storage, userId)
@@ -230,7 +232,7 @@ export const downloadFolderAsZip = async (directoryPath = "",length) => {
   const blob = await zip.generateAsync({ type: "blob" });
 //   console.log(directoryPath);
   const name = directoryPath.split('/').pop();
-  saveAs(blob, name);
+  saveAs(blob, `${name}.zip`)
 };
 
 //////////////////////////////////////////////
