@@ -5,23 +5,27 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Input,
+  Snippet,
 } from '@nextui-org/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { MdDelete, MdDownload, MdModeEdit } from 'react-icons/md';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { decrypt } from '../../utils/crypto';
-import { deleteDocument, deleteFolder, downloadFolderAsZip } from '../../firebase/storage';
+import { createURL, deleteDocument, deleteFolder, downloadFolderAsZip, renameDocument } from '../../firebase/storage';
+import { ref } from 'firebase/storage';
+import { storage } from '../../firebase/firebase';
 
 export default function Actions({ setHidden, name, setChanged, type }) {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
 
-  const [isFocused, setIsFocused] = useState(true);
+  const [isFocused, setIsFocused] = useState(false);
   const [fileName, setFileName] = useState('');
   const isInvalid = isFocused && fileName.split('.')[0].length < 3;
   const modalRef = useRef(null);
   const openModalButtonRef = useRef(null);
+  const [url,setURL]=useState("")
   const { documentId } = useParams();
 
   const handleDownloadFolder = async () => {
@@ -41,7 +45,14 @@ export default function Actions({ setHidden, name, setChanged, type }) {
     }
   };
 
+  const createURL2=async()=>{
+    const url = await createURL(decrypt(documentId) + `/${name}`)
+    console.log(url);
+    setURL(url)
+  }
+
   useEffect(() => {
+    createURL2()
     if (showModal) {
       document.body.style.overflow = 'hidden';
       if (modalRef.current) {
@@ -82,6 +93,15 @@ export default function Actions({ setHidden, name, setChanged, type }) {
     }
   };
 
+  const handleRenameDocument=async()=>{
+    console.log(fileName);
+    const newMetadata = {
+      name: fileName
+    };
+    await renameDocument(decrypt(documentId),name,fileName)
+    setChanged(true);
+  }
+
   return (
     <div className="absolute bottom-0 right-0">
       {showModal && (
@@ -118,6 +138,7 @@ export default function Actions({ setHidden, name, setChanged, type }) {
                 Close
               </Button>
               <Button
+                onPress={handleRenameDocument}
                 color="primary"
                 type="submit"
                 isDisabled={fileName.split('.')[0].length < 3}
@@ -143,30 +164,13 @@ export default function Actions({ setHidden, name, setChanged, type }) {
                 &times;
               </button>
             </div>
-            <Input
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              placeholder="Enter new file name"
-              variant="bordered"
-              classNames={{
-                inputWrapper: 'h-[50px]',
-              }}
-              value={fileName}
-              onValueChange={setFileName}
-              isInvalid={isInvalid}
-              color={isInvalid ? 'danger' : ''}
-              errorMessage={isInvalid && 'File name must be at least 3 characters'}
-            />
+            <div className='max-w-[400px] overflow-x-scroll'>
+              <Snippet>{url}</Snippet>
+
+            </div>
             <div className="flex justify-end mt-4">
-              <Button color="danger" variant="flat" onClick={handleModalClose}>
+              <Button color="danger" variant="flat" onClick={handleModalClose2}>
                 Close
-              </Button>
-              <Button
-                color="primary"
-                type="submit"
-                isDisabled={fileName.split('.')[0].length < 3}
-              >
-                Rename
               </Button>
             </div>
           </div>
@@ -186,13 +190,17 @@ export default function Actions({ setHidden, name, setChanged, type }) {
           </Button>
         </DropdownTrigger>
         <DropdownMenu>
-          <DropdownItem
-            startContent={<MdModeEdit size={20} color="blue" />}
-            className="text-blue-600 font-bold"
-            onPress={() => setShowModal(true)}
-          >
-            Rename
-          </DropdownItem>
+          {
+            type=="file"&&(
+              <DropdownItem
+                startContent={<MdModeEdit size={20} color="blue" />}
+                className="text-blue-600 font-bold"
+                onPress={() => setShowModal(true)}
+              >
+                Rename
+              </DropdownItem>
+            )
+          }
           <DropdownItem
             startContent={<MdDownload size={20} color="green" />}
             className="text-green-700 font-bold"

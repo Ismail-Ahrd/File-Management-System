@@ -1,4 +1,4 @@
-import {getDownloadURL, listAll, ref, uploadBytes, uploadString, getMetadata, deleteObject, getBlob } from "firebase/storage";
+import {getDownloadURL,  listAll, ref, uploadBytes, uploadString, getMetadata, deleteObject, getBlob, updateMetadata } from "firebase/storage";
 import { db, storage } from "./firebase";
 import JSZip from "jszip";
 import { getDatabase,ref as dbRef, set, runTransaction, get } from "firebase/database";
@@ -13,6 +13,37 @@ export const createRootFolder = async (userId) => {
 
 }
 
+function stringToFile(stringContent, fileName, contentType) {
+  const blob = new Blob([stringContent], { type: contentType });
+  const file = new File([blob], fileName);
+  return file;
+}
+// const newMetadata = {
+//   cacheControl: 'public,max-age=300',
+//   contentType: 'image/jpeg'
+// };
+
+export const renameDocument=async(path,name, newName)=>{
+
+  console.log(path);
+  const oldRef = ref(storage, path+`/${name}`);
+  const newRef=ref(storage,path+`/${newName}`)
+  const url = await getDownloadURL(oldRef)
+  const res = await fetch(url)
+  const file=stringToFile(await res.text())
+  await createFile(path+`/${newName}`,file)
+  await deleteDocument(path+`/${name}`)
+
+
+}
+
+
+export const createURL=async(path)=>{
+  const fileRef=ref(storage,path)
+  const url = await getDownloadURL(fileRef)
+  return url
+
+}
 
 export const getDocuments = async (path) => {
     const { prefixes, items } = await listAll(ref(storage, path));
