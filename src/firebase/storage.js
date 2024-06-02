@@ -232,7 +232,7 @@ export const downloadFolderAsZip = async (directoryPath = "",length) => {
   const blob = await zip.generateAsync({ type: "blob" });
 //   console.log(directoryPath);
   const name = directoryPath.split('/').pop();
-  saveAs(blob, `${name}.zip`)
+  saveAs(blob, `${name}`)
 };
 
 //////////////////////////////////////////////
